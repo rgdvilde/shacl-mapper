@@ -37,11 +37,12 @@
         })
       },
       targetClass() {
+        return $rdf.namedNode('http://www.w3.org/ns/r2rml#TriplesMap')
         // implicit class target
-        if (this.shape.context.$shapes.query().match(this.shape.shapeNode, 'rdf:type', 'rdfs:Class').hasSolution())
-          return this.shape.shapeNode
-        // class-based target
-        return this.shape.context.$shapes.query().getObject(this.shape.shapeNode, 'sh:targetClass')
+        // if (this.shape.context.$shapes.query().match(this.shape.shapeNode, 'rdf:type', 'rdfs:Class').hasSolution())
+        //   return this.shape.shapeNode
+        // // class-based target
+        // return this.shape.context.$shapes.query().getObject(this.shape.shapeNode, 'sh:targetClass')
       }
     },
     methods: {

@@ -45,10 +45,10 @@
     },
     computed: {
       inputType() {
-        // if(this.constant === false) {
-        //   return 'text'
-        // }
-        // else {
+        if(this.constant === false) {
+          return 'text'
+        }
+        else {
           switch (!this.constraints.datatype || this.constraints.datatype.value) {
             case XSD('date').value:
               return 'date'
@@ -65,7 +65,7 @@
             default:
               return 'text'
           }
-        // }
+        }
       },
       minlength() {
         return this.constraints.minLength ? this.constraints.minLength : null

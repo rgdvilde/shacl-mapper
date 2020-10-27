@@ -156,65 +156,37 @@
 
         if (!this.subject)
           return null
-//   wtr.addQuad(
-//     namedNode('rl:TriplesMap'),
-//     namedNode('rr:predicateObjectMap'),
-//   wtr.blank([{
-//     predicate: namedNode('rr:predicate'),
-//     object: namedNode(p)
-//     },
-//     {
-//     predicate: namedNode('rr:objectMap'),
-//     object: writer.blank([{
-//       predicate: namedNode('rml:reference'),
-//       object: literal(om)
-//     }])
-//     }
-//     ])
-// );
-
-// const prefixes = {
-//   prefixes: {
-//     c: 'http://example.org/cartoons#',
-//     rml: 'http://semweb.mmlab.be/ns/rml#' ,
-//     rr: 'http://www.w3.org/ns/r2rml#' ,
-//     ql: 'http://semweb.mmlab.be/ns/ql#' ,
-//     rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#' ,
-//     rl: 'http://example.org/rules/' ,
-//     schema: 'http://schema.org/' ,
-//     dbo: 'http://dbpedia.org/ontology/' ,
-//     ngsic: 'https://uri.etsi.org/ngsi-ld/default-context/',
-//     ngsi: 'https://uri.fiware.org/ns/data-models#'
-//   }
-// }
 
 
-        // const TriplesMap = $rdf.namedNode('http://example.org/rules/TriplesMap')
-        // const predicateObjectMap = $rdf.namedNode('http://www.w3.org/ns/r2rml#predicateObjectMap')
-        // // const subjectMap = $rdf.namedNode('http://www.w3.org/ns/r2rml#subjectMap')
-        // const predicate = $rdf.namedNode('http://www.w3.org/ns/r2rml#predicate')
-        // const objectMap = $rdf.namedNode('http://www.w3.org/ns/r2rml#objectMap')
-        // // const reference = $rdf.namedNode('http://semweb.mmlab.be/ns/rml#reference')
-        // const rdftype = $rdf.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type')
-        // const BikeHireDockingStation = $rdf.namedNode('https://uri.fiware.org/ns/data-models#BikeHireDockingStation')
-        // const rrconstant = $rdf.namedNode('http://www.w3.org/ns/r2rml#constant')
-        
-        // const blankNode1 = $rdf.blankNode()
-        // const blankNode2 = $rdf.blankNode()
-        // const blankNode3 = $rdf.blankNode()
+        const RR = new $rdf.Namespace('http://www.w3.org/ns/r2rml#')
+        // const NGSI = new $rdf.Namespace('https://uri.fiware.org/ns/data-models#')
+        // const NGSIC = new $rdf.Namespace('https://uri.etsi.org/ngsi-ld/')
+        const RML = new $rdf.Namespace('http://semweb.mmlab.be/ns/rml#')
+        // const RL = new $rdf.Namespace('http://example.org/rules/')
+        // const QL = new $rdf.Namespace('http://semweb.mmlab.be/ns/ql#')
+        // const RDF = new $rdf.Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
 
-        // let quads = objects
-        //   .filter(v => v)
-
-        // quads.concat($rdf.quad(TriplesMap,predicateObjectMap,blankNode1))
-        // quads.concat($rdf.quad(blankNode1,predicate,rdftype))
-        // quads.concat($rdf.quad(blankNode2,objectMap,blankNode3))
-        // quads.concat($rdf.quad(blankNode3,rrconstant,BikeHireDockingStation))
-        
         let quads = objects
           .filter(v => v)
-          .map(object => $rdf.quad(this.subject, this.propertyShape.path, object))          
-
+          .reduce((r,object) => {         
+            const blankNode1 = $rdf.blankNode()
+            const blankNode3 = $rdf.blankNode()
+            r.push($rdf.quad(this.subject,RR('predicateObjectMap'),blankNode1))
+            r.push($rdf.quad(blankNode1,RR('predicate'),this.propertyShape.path))
+            r.push($rdf.quad(blankNode1,RR('objectMap'),blankNode3))
+            if (this.constant) {
+              r.push($rdf.quad(blankNode3,RR('constant'),object))              
+            } else {
+              r.push($rdf.quad(blankNode3,RML('reference'),object))
+            }
+            
+            return r
+          },[])  
+        
+        // let quads = objects
+        //   .filter(v => v)
+        //   .map(object => $rdf.quad(this.subject, this.propertyShape.path, object))          
+        console.log(quads)
         if (this.isBlankNode) {
           if (!this.quadsUnderBlankNode || this.quadsUnderBlankNode.flat().length === 0)
             return null
@@ -273,7 +245,6 @@
             }
           })
         }
-        console.log(objects)
         return objects
       },
       onInput() {
