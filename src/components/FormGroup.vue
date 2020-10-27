@@ -30,6 +30,7 @@
       }
     },
     beforeCreate: function () {
+      console.log('beforeCreate')
       this.$options.components.FormInput = require('./FormInput.vue').default
     },
     computed: {

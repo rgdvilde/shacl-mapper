@@ -19,7 +19,6 @@
     </div>
     <form-group :subject="subject" :shape="shape" :shapesStore="shapesStore" v-if="shape"
                 v-model="quads" @input="onUpdate"></form-group>
-
   </form>
   <div>
     {{keys}}
@@ -98,8 +97,10 @@ export default {
       deep: true,
       immediate: true,
       handler() {
+        console.log('update')
         this.quads = []
         this.onUpdate()
+        console.log(this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : 'rofl')
       }
     }
   },
@@ -115,7 +116,6 @@ export default {
       return null
     },
     shape() {
-      console.log(this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null)
       return this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null
     },
     keys() {
