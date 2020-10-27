@@ -8,11 +8,30 @@
             <option v-for="uri in targetShapes" :value="uri">{{ uri }}</option>
           </select>
         </div>
-      </form>> 
-
+      </form>
+    <div :class="mergedOptions.styles.field">
+    <label for="cars" :class="mergedOptions.styles.label">Filetype</label>
+    <select id="filetypelist" name="filetypelist" form="filetyplist" v-model="filetype" @input="onUpdate">
+      <option value="json">Json</option>
+    </select>
+    </div>
+    <div :class="mergedOptions.styles.field">
+      <label :class="mergedOptions.styles.label">
+        Iterator
+      </label>
+      <div :class="mergedOptions.styles.inputColumn">
+        <input :class="mergedOptions.styles.input" v-model="iteratorText" @input="onUpdate"/>
+      </div>
+    </div>
+    <div :class="mergedOptions.styles.field">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1" v-model="toggleEndpoint">
+        <label class="form-check-label" for="exampleCheck1">Toggle Endpoint</label>
+      </div>
+    </div>
       <hr>
       <div class="row">
-        <div class="col-sm">
+        <div class="col-sm" v-if="toggleEndpoint">
           <vue-json-pretty
             :path="'res'"
             :data="endpointData">
@@ -38,8 +57,11 @@
         <div class="tab-pane show active" id="form" role="tabpanel" aria-labelledby="form-tab">
           <shacl-form :shapesGraphText="shapesGraphText"
                       :targetClass="targetClass"
+                      :targetShapes="targetShapes"
                       :options="options"
                       :endpointData="endpointdata"
+                      :iteratorText="iteratorText"
+                      :filetype="filetype"
                       ref="shaclForm"
                       @update="onUpdate"
                       @load="onLoad"></shacl-form>
@@ -77,6 +99,7 @@ import * as $rdf from 'rdflib'
 import ShaclForm from './ShaclForm';
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
+import defaultOptions from './lib/options'
 
 export default {
   name: 'ShaclMapper',
@@ -88,19 +111,22 @@ export default {
   data() {
     return {
       shapeFileUri: document.location.origin + '/ngsi.ttl',
+      mergedOptions: defaultOptions,
       targetClass: '',
       dataText: '',
+      iteratorText: '$',
+      filetype: 'json',      
       shapesGraph: $rdf.graph(),
       targetShapes: [],
       endpointdata: {},
       url: 'https://data.stad.gent/api/records/1.0/search/?dataset=donkey-republic-deelfietsen-stations-locaties&q=',
+      toggleEndpoint: true
     }
   },
   mounted() {
   },
   methods: {
     validate() {
-      console.log(this.$refs)
       this.$refs.shaclForm.validate()
     },
     onUpdate(graph) {
@@ -111,6 +137,7 @@ export default {
     onLoad(shapes) {
       this.targetShapes = shapes
     }
+
   },
   components: {
     ShaclForm,

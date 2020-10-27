@@ -4,6 +4,8 @@
                     :key="idx"
                     :subject="subject"
                     :propertyShapeNode="cons.paramValue"
+                    :shapesStore="shapesStore"
+                    :targetShapes="targetShapes"
                     v-model="quads[idx]"
                     v-on:input="onInput"></form-input>
     </div>
@@ -21,6 +23,8 @@
     props: [
       'shape',   // Shape instance
       'subject', // subject of the instance being edited
+      'shapesStore',
+      'targetShapes'
     ],
     data() {
       return {

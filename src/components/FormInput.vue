@@ -10,12 +10,17 @@
               <label class="custom-control-label" @click.prevent="typeChange">Constant </label>
             </div>
             <button type="button"
+                    :class="[options.styles.button]"
+                    v-if="isAddable"
+                    @click.prevent="expand">expand
+            </button>
+            <button type="button"
                     :class="[options.styles.button, options.styles.buttonAdd]"
                     v-if="isAddable"
                     @click.prevent="add">+
             </button>
         </div>
-        <div v-if="!isBlankNode" :class="options.styles.inputColumn">
+        <div v-if="!expanded.expanded" :class="options.styles.inputColumn">
             <div v-for="(value, index) in inputValue" :class="options.styles.inputGroup">
                 <typed-input :constant="constant"
                              :constraints="constraintParams"
@@ -43,17 +48,15 @@
             </div>
         </div>
         <div v-else :class="options.styles.inputColumn">
-            <div v-for="(node, index) in objects()" :key="node.value">
-                <form-group :class="options.styles.fieldChild"
-                            v-model="quadsUnderBlankNode[index]"
-                            :subject="node"
-                            :shape="blankNodeTarget"
-                            @input="onInput"></form-group>
-                <button :class="[options.styles.button, options.styles.buttonDel]"
-                        v-if="isRemovable"
-                        @click.prevent="remove(index)">×
-                </button>
-            </div>
+          <shacl-form :shapesGraphText="shapesGraphText"
+                      :targetClass="targetClass"
+                      :options="options"
+                      :endpointData="endpointdata"
+                      :iteratorText="iteratorText"
+                      :filetype="filetype"
+                      ref="shaclForm"
+                      @update="onUpdate"
+                      @load="onLoad"></shacl-form>
         </div>
     </div>
 </template>
@@ -61,6 +64,7 @@
 <script>
   import * as $rdf from 'rdflib'
   import TypedInput from './TypedInput.vue'
+  // import queries from '../lib/queries'
 
   import {shrinkUri} from '../lib/util'
 
@@ -71,7 +75,10 @@
     props: [
       'propertyShapeNode', // Shape instance which is sh:PropertyShape
       'subject',           // subject of the instance being edited
-      'value'
+      'value',
+      'expansion',
+      'shapesStore',
+      'targetShapes'
     ],
     data() {
       return {
@@ -81,6 +88,9 @@
         quadsUnderBlankNode: [],
         constraintParams: {},
         constant: false,
+        expanded: {
+          expanded: false
+        }
       }
     },
     inject: [
@@ -254,10 +264,25 @@
         if (!node) return ''
         return shrinkUri(node, this.shapesGraph.context.$shapes.store.namespaces)
       },
+      expand() {
+        // const query = queries.getexpansion
+        // var eq = $rdf.SPARQLToQuery(query,false,this.shapesStore)
+        // var onresult = function(result) {
+        //   console.log(result['?b']['value'])
+        // }
+        // var onDone  = function() {  
+        //   console.log('done')
+        //  }
+        // this.shapesStore.query(eq,onresult,undefined,onDone)
+        // // this.expanded.expanded = !this.expanded.expanded    
+        console.log(this.targetShapes)   
+        console.log(this.propertyShape)
+        console.log(this.targetShapes.indexOf(this.subject))
+      }
     },
     components: {
       TypedInput,
-      FormGroup: () => import('./FormGroup.vue')
+      ShaclForm: () => import('../ShaclForm.vue')
     }
   }
 </script>

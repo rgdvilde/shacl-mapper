@@ -10,20 +10,6 @@
       </div>
     </div>
     <div :class="mergedOptions.styles.field">
-    <label for="cars" :class="mergedOptions.styles.label">Filetype</label>
-    <select id="filetypelist" name="filetypelist" form="filetyplist" v-model="filetype" @input="onUpdate">
-      <option value="json">Json</option>
-    </select>
-    </div>
-    <div :class="mergedOptions.styles.field">
-      <label :class="mergedOptions.styles.label">
-        Iterator
-      </label>
-      <div :class="mergedOptions.styles.inputColumn">
-        <input :class="mergedOptions.styles.input" v-model="iteratorText" @input="onUpdate"/>
-      </div>
-    </div>
-    <div :class="mergedOptions.styles.field">
       <label :class="mergedOptions.styles.label">
         Subject Template
       </label>
@@ -31,7 +17,7 @@
         <input :class="mergedOptions.styles.input" v-model="subjectTemplate" @input="onUpdate"/>
       </div>
     </div>
-    <form-group :subject="subject" :shape="shape" v-if="shape"
+    <form-group :subject="subject" :shape="shape" :shapesStore="shapesStore" :targetShapes="targetShapes" v-if="shape"
                 v-model="quads" @input="onUpdate"></form-group>
 
   </form>
@@ -63,7 +49,10 @@ export default {
     shapesGraphText: String,
     targetClass: String,
     options: Object,
-    endpointData: Object
+    endpointData: Object,
+    iteratorText: String,
+    filetype: String,
+    targetShapes:String
   },
   data() {
     return {
@@ -72,8 +61,6 @@ export default {
       mergedOptions: defaultOptions,
       validator: new SHACLValidator(),
       validationResults: [],
-      iteratorText: '$',
-      filetype: 'json',
       subjectTemplate: ''
     }
   },
@@ -125,8 +112,8 @@ export default {
         return null
       }
     },
-    shapeNode() {
-      return this.targetClass ? $rdf.namedNode(this.targetClass) : null
+    currentNodeShape() {
+      return null
     },
     shape() {
       return this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null
@@ -157,6 +144,18 @@ export default {
       r.push($rdf.quad(blankNode6,RR('objectMap'),blankNode8))
       r.push($rdf.quad(blankNode8,RR('constant'),this.targetClass))
       return r
+    },
+    shapesStore() {
+      let uri = 'https://example.org/resource.ttl'
+      let mimeType = 'text/turtle'
+      let store = $rdf.graph()
+      try {
+          $rdf.parse(this.shapesGraphText, store, uri, mimeType)
+      } catch (err) {
+          console.log(err)
+      }
+      return store
+
     }
   },
   methods: {
