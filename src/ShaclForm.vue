@@ -17,7 +17,7 @@
         <input :class="mergedOptions.styles.input" v-model="subjectTemplate" @input="onUpdate"/>
       </div>
     </div>
-    <form-group :subject="subject" :shape="shape" :shapesStore="shapesStore" :targetShapes="targetShapes" v-if="shape"
+    <form-group :subject="subject" :shape="shape" :shapesStore="shapesStore" v-if="shape"
                 v-model="quads" @input="onUpdate"></form-group>
 
   </form>
@@ -52,7 +52,6 @@ export default {
     endpointData: Object,
     iteratorText: String,
     filetype: String,
-    targetShapes:String
   },
   data() {
     return {
@@ -116,6 +115,7 @@ export default {
       return null
     },
     shape() {
+      console.log(this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null)
       return this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null
     },
     keys() {

@@ -77,8 +77,7 @@
       'subject',           // subject of the instance being edited
       'value',
       'expansion',
-      'shapesStore',
-      'targetShapes'
+      'shapesStore'
     ],
     data() {
       return {
@@ -275,9 +274,7 @@
         //  }
         // this.shapesStore.query(eq,onresult,undefined,onDone)
         // // this.expanded.expanded = !this.expanded.expanded    
-        console.log(this.targetShapes)   
         console.log(this.propertyShape)
-        console.log(this.targetShapes.indexOf(this.subject))
       }
     },
     components: {
