@@ -195,7 +195,6 @@
         // let quads = objects
         //   .filter(v => v)
         //   .map(object => $rdf.quad(this.subject, this.propertyShape.path, object))          
-        console.log(quads)
         if (this.isBlankNode) {
           if (!this.quadsUnderBlankNode || this.quadsUnderBlankNode.flat().length === 0)
             return null

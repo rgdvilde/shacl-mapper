@@ -30,13 +30,11 @@
       }
     },
     beforeCreate: function () {
-      console.log('beforeCreate')
       this.$options.components.FormInput = require('./FormInput.vue').default
     },
     computed: {
       propertyConstraints() {
         return this.shape.constraints.filter(cons => {
-          console.log(cons.component.node.equals(SHACL('PropertyConstraintComponent')))
           return cons.component.node.equals(SHACL('PropertyConstraintComponent'))
         })
       },

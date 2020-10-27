@@ -4,7 +4,7 @@
       <form>
         <div class="form-group">
           <label>Target</label>
-          <select v-model="targetClass" class="form-control" @input="test">
+          <select v-model="targetClass" class="form-control">
             <option v-for="uri in targetShapes" :value="uri">{{ uri }}</option>
           </select>
         </div>
@@ -136,9 +136,6 @@ export default {
     },
     onLoad(shapes) {
       this.targetShapes = shapes
-    },
-    test() {
-      console.log(this.targetClass)
     }
 
   },

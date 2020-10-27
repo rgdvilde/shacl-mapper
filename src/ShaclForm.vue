@@ -97,10 +97,8 @@ export default {
       deep: true,
       immediate: true,
       handler() {
-        console.log('update')
         this.quads = []
         this.onUpdate()
-        console.log(this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : 'rofl')
       }
     }
   },
@@ -114,6 +112,9 @@ export default {
     },
     currentNodeShape() {
       return null
+    },
+    shapeNode() {
+      return this.targetClass ? $rdf.namedNode(this.targetClass) : null
     },
     shape() {
       return this.shapeNode ? this.validator.shapesGraph.getShape(this.shapeNode) : null
@@ -175,7 +176,6 @@ export default {
       }).map(shape => {
         return shape.shapeNode.value
       })
-      console.log(shapes)
       this.$emit('load', shapes)
     },
     validate() {
